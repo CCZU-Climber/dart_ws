@@ -1,0 +1,2 @@
+/usr/bin/ar qc libHikCam.a CMakeFiles/HikCam.dir/HikCam.cpp.o CMakeFiles/HikCam.dir/main.cpp.o
+/usr/bin/ranlib libHikCam.a
