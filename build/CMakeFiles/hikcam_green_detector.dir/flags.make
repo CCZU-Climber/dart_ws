@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/dart/Desktop/HikCam -I/home/dart/Desktop/HikCam/Includes -isystem /usr/local/include/opencv4
+CXX_INCLUDES = -I/opt/MVS/include -isystem /usr/local/include/opencv4
 
-CXX_FLAGS = -std=gnu++14
+CXX_FLAGS = -Wall -Wextra -std=gnu++11
 

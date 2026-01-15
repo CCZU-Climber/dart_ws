@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/dart/Desktop/HikCam
+CMAKE_SOURCE_DIR = /home/dart/Desktop/HikCam/dart_ws
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/dart/Desktop/HikCam/build
+CMAKE_BINARY_DIR = /home/dart/Desktop/HikCam/dart_ws/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dart/Desktop/HikCam/build/CMakeFiles /home/dart/Desktop/HikCam/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles /home/dart/Desktop/HikCam/dart_ws/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/dart/Desktop/HikCam/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -117,19 +117,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named HikCamLib
-
-# Build rule for target.
-HikCamLib: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 HikCamLib
-.PHONY : HikCamLib
-
-# fast build rule for target.
-HikCamLib/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HikCamLib.dir/build.make CMakeFiles/HikCamLib.dir/build
-.PHONY : HikCamLib/fast
-
-#=============================================================================
 # Target rules for targets named hikcam_green_detector
 
 # Build rule for target.
@@ -142,12 +129,60 @@ hikcam_green_detector/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/build
 .PHONY : hikcam_green_detector/fast
 
+AlignmentController.o: AlignmentController.cpp.o
+.PHONY : AlignmentController.o
+
+# target to build an object file
+AlignmentController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o
+.PHONY : AlignmentController.cpp.o
+
+AlignmentController.i: AlignmentController.cpp.i
+.PHONY : AlignmentController.i
+
+# target to preprocess a source file
+AlignmentController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.i
+.PHONY : AlignmentController.cpp.i
+
+AlignmentController.s: AlignmentController.cpp.s
+.PHONY : AlignmentController.s
+
+# target to generate assembly for a file
+AlignmentController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.s
+.PHONY : AlignmentController.cpp.s
+
+GridDrawer.o: GridDrawer.cpp.o
+.PHONY : GridDrawer.o
+
+# target to build an object file
+GridDrawer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o
+.PHONY : GridDrawer.cpp.o
+
+GridDrawer.i: GridDrawer.cpp.i
+.PHONY : GridDrawer.i
+
+# target to preprocess a source file
+GridDrawer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.i
+.PHONY : GridDrawer.cpp.i
+
+GridDrawer.s: GridDrawer.cpp.s
+.PHONY : GridDrawer.s
+
+# target to generate assembly for a file
+GridDrawer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.s
+.PHONY : GridDrawer.cpp.s
+
 HikCam.o: HikCam.cpp.o
 .PHONY : HikCam.o
 
 # target to build an object file
 HikCam.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HikCamLib.dir/build.make CMakeFiles/HikCamLib.dir/HikCam.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o
 .PHONY : HikCam.cpp.o
 
 HikCam.i: HikCam.cpp.i
@@ -155,7 +190,7 @@ HikCam.i: HikCam.cpp.i
 
 # target to preprocess a source file
 HikCam.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HikCamLib.dir/build.make CMakeFiles/HikCamLib.dir/HikCam.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.i
 .PHONY : HikCam.cpp.i
 
 HikCam.s: HikCam.cpp.s
@@ -163,8 +198,104 @@ HikCam.s: HikCam.cpp.s
 
 # target to generate assembly for a file
 HikCam.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/HikCamLib.dir/build.make CMakeFiles/HikCamLib.dir/HikCam.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.s
 .PHONY : HikCam.cpp.s
+
+MotorController.o: MotorController.cpp.o
+.PHONY : MotorController.o
+
+# target to build an object file
+MotorController.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o
+.PHONY : MotorController.cpp.o
+
+MotorController.i: MotorController.cpp.i
+.PHONY : MotorController.i
+
+# target to preprocess a source file
+MotorController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.i
+.PHONY : MotorController.cpp.i
+
+MotorController.s: MotorController.cpp.s
+.PHONY : MotorController.s
+
+# target to generate assembly for a file
+MotorController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.s
+.PHONY : MotorController.cpp.s
+
+SerialPort.o: SerialPort.cpp.o
+.PHONY : SerialPort.o
+
+# target to build an object file
+SerialPort.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o
+.PHONY : SerialPort.cpp.o
+
+SerialPort.i: SerialPort.cpp.i
+.PHONY : SerialPort.i
+
+# target to preprocess a source file
+SerialPort.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.i
+.PHONY : SerialPort.cpp.i
+
+SerialPort.s: SerialPort.cpp.s
+.PHONY : SerialPort.s
+
+# target to generate assembly for a file
+SerialPort.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.s
+.PHONY : SerialPort.cpp.s
+
+UserInterface.o: UserInterface.cpp.o
+.PHONY : UserInterface.o
+
+# target to build an object file
+UserInterface.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o
+.PHONY : UserInterface.cpp.o
+
+UserInterface.i: UserInterface.cpp.i
+.PHONY : UserInterface.i
+
+# target to preprocess a source file
+UserInterface.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.i
+.PHONY : UserInterface.cpp.i
+
+UserInterface.s: UserInterface.cpp.s
+.PHONY : UserInterface.s
+
+# target to generate assembly for a file
+UserInterface.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.s
+.PHONY : UserInterface.cpp.s
+
+VisionDetector.o: VisionDetector.cpp.o
+.PHONY : VisionDetector.o
+
+# target to build an object file
+VisionDetector.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o
+.PHONY : VisionDetector.cpp.o
+
+VisionDetector.i: VisionDetector.cpp.i
+.PHONY : VisionDetector.i
+
+# target to preprocess a source file
+VisionDetector.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.i
+.PHONY : VisionDetector.cpp.i
+
+VisionDetector.s: VisionDetector.cpp.s
+.PHONY : VisionDetector.s
+
+# target to generate assembly for a file
+VisionDetector.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/hikcam_green_detector.dir/build.make CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.s
+.PHONY : VisionDetector.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -198,11 +329,28 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... HikCamLib"
 	@echo "... hikcam_green_detector"
+	@echo "... AlignmentController.o"
+	@echo "... AlignmentController.i"
+	@echo "... AlignmentController.s"
+	@echo "... GridDrawer.o"
+	@echo "... GridDrawer.i"
+	@echo "... GridDrawer.s"
 	@echo "... HikCam.o"
 	@echo "... HikCam.i"
 	@echo "... HikCam.s"
+	@echo "... MotorController.o"
+	@echo "... MotorController.i"
+	@echo "... MotorController.s"
+	@echo "... SerialPort.o"
+	@echo "... SerialPort.i"
+	@echo "... SerialPort.s"
+	@echo "... UserInterface.o"
+	@echo "... UserInterface.i"
+	@echo "... UserInterface.s"
+	@echo "... VisionDetector.o"
+	@echo "... VisionDetector.i"
+	@echo "... VisionDetector.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

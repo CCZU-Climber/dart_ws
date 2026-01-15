@@ -1,4 +1,4 @@
-# Install script for directory: /home/dart/Desktop/HikCam
+# Install script for directory: /home/dart/Desktop/HikCam/dart_ws
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/dart/Desktop/HikCam/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/dart/Desktop/HikCam/dart_ws/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

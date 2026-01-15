@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/dart/Desktop/HikCam
+CMAKE_SOURCE_DIR = /home/dart/Desktop/HikCam/dart_ws
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/dart/Desktop/HikCam/build
+CMAKE_BINARY_DIR = /home/dart/Desktop/HikCam/dart_ws/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/hikcam_green_detector.dir/depend.make
@@ -72,35 +72,156 @@ include CMakeFiles/hikcam_green_detector.dir/flags.make
 CMakeFiles/hikcam_green_detector.dir/main.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
 CMakeFiles/hikcam_green_detector.dir/main.cpp.o: ../main.cpp
 CMakeFiles/hikcam_green_detector.dir/main.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/hikcam_green_detector.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/main.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/main.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/main.cpp.o -c /home/dart/Desktop/HikCam/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/hikcam_green_detector.dir/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/main.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/main.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/main.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/main.cpp
 
 CMakeFiles/hikcam_green_detector.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/main.cpp > CMakeFiles/hikcam_green_detector.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/main.cpp > CMakeFiles/hikcam_green_detector.dir/main.cpp.i
 
 CMakeFiles/hikcam_green_detector.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/main.cpp -o CMakeFiles/hikcam_green_detector.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/main.cpp -o CMakeFiles/hikcam_green_detector.dir/main.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o: ../HikCam.cpp
+CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/HikCam.cpp
+
+CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/HikCam.cpp > CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/HikCam.cpp -o CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o: ../SerialPort.cpp
+CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/SerialPort.cpp
+
+CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/SerialPort.cpp > CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/SerialPort.cpp -o CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o: ../MotorController.cpp
+CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/MotorController.cpp
+
+CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/MotorController.cpp > CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/MotorController.cpp -o CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o: ../VisionDetector.cpp
+CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/VisionDetector.cpp
+
+CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/VisionDetector.cpp > CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/VisionDetector.cpp -o CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o: ../AlignmentController.cpp
+CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/AlignmentController.cpp
+
+CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/AlignmentController.cpp > CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/AlignmentController.cpp -o CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o: ../UserInterface.cpp
+CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/UserInterface.cpp
+
+CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/UserInterface.cpp > CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/UserInterface.cpp -o CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.s
+
+CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o: CMakeFiles/hikcam_green_detector.dir/flags.make
+CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o: ../GridDrawer.cpp
+CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o: CMakeFiles/hikcam_green_detector.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o -MF CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o.d -o CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o -c /home/dart/Desktop/HikCam/dart_ws/GridDrawer.cpp
+
+CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/dart/Desktop/HikCam/dart_ws/GridDrawer.cpp > CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.i
+
+CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/dart/Desktop/HikCam/dart_ws/GridDrawer.cpp -o CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.s
 
 # Object files for target hikcam_green_detector
 hikcam_green_detector_OBJECTS = \
-"CMakeFiles/hikcam_green_detector.dir/main.cpp.o"
+"CMakeFiles/hikcam_green_detector.dir/main.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o" \
+"CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o"
 
 # External object files for target hikcam_green_detector
 hikcam_green_detector_EXTERNAL_OBJECTS =
 
 hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/main.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/SerialPort.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/VisionDetector.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/AlignmentController.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/UserInterface.cpp.o
+hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/GridDrawer.cpp.o
 hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/build.make
-hikcam_green_detector: libHikCamLib.a
+hikcam_green_detector: /usr/local/lib/libopencv_dnn.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_gapi.so.4.5.0
 hikcam_green_detector: /usr/local/lib/libopencv_highgui.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_ml.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_objdetect.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_photo.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_stitching.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_video.so.4.5.0
 hikcam_green_detector: /usr/local/lib/libopencv_videoio.so.4.5.0
+hikcam_green_detector: /opt/MVS/lib/64/libMvCameraControl.so
 hikcam_green_detector: /usr/local/lib/libopencv_imgcodecs.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_calib3d.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_features2d.so.4.5.0
+hikcam_green_detector: /usr/local/lib/libopencv_flann.so.4.5.0
 hikcam_green_detector: /usr/local/lib/libopencv_imgproc.so.4.5.0
 hikcam_green_detector: /usr/local/lib/libopencv_core.so.4.5.0
-hikcam_green_detector: ../lib/amd64/libMvCameraControl.so
 hikcam_green_detector: CMakeFiles/hikcam_green_detector.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dart/Desktop/HikCam/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable hikcam_green_detector"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable hikcam_green_detector"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/hikcam_green_detector.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -112,6 +233,6 @@ CMakeFiles/hikcam_green_detector.dir/clean:
 .PHONY : CMakeFiles/hikcam_green_detector.dir/clean
 
 CMakeFiles/hikcam_green_detector.dir/depend:
-	cd /home/dart/Desktop/HikCam/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/dart/Desktop/HikCam /home/dart/Desktop/HikCam /home/dart/Desktop/HikCam/build /home/dart/Desktop/HikCam/build /home/dart/Desktop/HikCam/build/CMakeFiles/hikcam_green_detector.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/dart/Desktop/HikCam/dart_ws/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/dart/Desktop/HikCam/dart_ws /home/dart/Desktop/HikCam/dart_ws /home/dart/Desktop/HikCam/dart_ws/build /home/dart/Desktop/HikCam/dart_ws/build /home/dart/Desktop/HikCam/dart_ws/build/CMakeFiles/hikcam_green_detector.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/hikcam_green_detector.dir/depend
 

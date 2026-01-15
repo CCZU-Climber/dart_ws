@@ -163,7 +163,7 @@ namespace sensor::camera{
     auto HikCam::Grab() -> cv::Mat
     {
         cv::Mat srcImage;
-        MV_FRAME_OUT stImageInfo = {0};
+        MV_FRAME_OUT stImageInfo = {};
         const int maxRetries = 5; // 最大重试次数
         int numRetries = 0;
 
