@@ -1,3 +1,4 @@
+//自动对准控制器实现文件
 #include "AlignmentController.h"
 #include <iostream>
 #include <cmath>
@@ -11,6 +12,7 @@ AlignmentController::AlignmentController()
       is_aligned_(false),
       alignment_frame_count_(0),
       last_motor_data_(0) {
+    camera_offset_pixels_ = 0.0f;
 }
 
 AlignmentController::~AlignmentController() {
@@ -21,8 +23,9 @@ void AlignmentController::performAlignment(const cv::Point2f& circle_center, int
     // 计算图像中心
     float image_center_x = image_width / 2.0f;
     
-    // 计算像素误差
-    current_pixel_error_ = circle_center.x - image_center_x;
+    // 计算像素误差并应用摄像头相对于发射架中轴线的水平偏移补偿
+    // 有效误差 = (检测中心 - 图像中心) - camera_offset_pixels_
+    current_pixel_error_ = (circle_center.x - image_center_x) - camera_offset_pixels_;
     
     // 判断是否已经对准（考虑死区）
     if (fabs(current_pixel_error_) <= alignment_threshold_) {
@@ -201,4 +204,24 @@ bool AlignmentController::connectMotorController() {
     }
     
     return true;
+}
+
+// 设置摄像头相对中轴线的像素水平偏移
+void AlignmentController::setCameraOffsetPixels(float px) {
+    camera_offset_pixels_ = px;
+    std::cout << "摄像头像素偏移已设置: " << camera_offset_pixels_ << " px" << std::endl;
+}
+
+// 使用毫米值和像素/毫米比例设置偏移（mm_per_pixel = px/mm）
+void AlignmentController::setCameraOffsetMM(float mm, float mm_per_pixel) {
+    if (mm_per_pixel <= 0.0f) {
+        std::cout << "无效的 mm_per_pixel 值，必须大于 0" << std::endl;
+        return;
+    }
+    camera_offset_pixels_ = mm * mm_per_pixel;
+    std::cout << "摄像头偏移已设置: " << mm << " mm -> " << camera_offset_pixels_ << " px (" << mm_per_pixel << " px/mm)" << std::endl;
+}
+
+float AlignmentController::getCameraOffsetPixels() const {
+    return camera_offset_pixels_;
 }

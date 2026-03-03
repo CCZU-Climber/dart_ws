@@ -107,6 +107,8 @@ namespace sensor::camera
         int _nRet = MV_OK;
         void *_handle = NULL;
         unsigned char *_pDstData = NULL;
+    // 记录上一次打印的像素格式，避免每帧重复打印调试信息
+    int _lastPixelType = -1;
 
         bool PrintDeviceInfo(MV_CC_DEVICE_INFO *pstMVDevInfo);
         void SetAttribute(CAM_INFO Info);

@@ -1,6 +1,7 @@
 #include "UserInterface.h"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 const std::string UserInterface::CAMERA_WINDOW = "Camera View";
 const std::string UserInterface::RESULT_WINDOW = "Detection Result";
@@ -21,6 +22,18 @@ void UserInterface::displayResults(const cv::Mat& camera_frame, const cv::Mat& d
                                  double processing_time_ms) {
     // 创建摄像头视图的副本用于显示
     cv::Mat camera_view = camera_frame.clone();
+    // 计算显示缩放因子以限制窗口大小
+    double display_scale = 1.0;
+    if (camera_view.cols > max_display_width_ || camera_view.rows > max_display_height_) {
+        double sx = static_cast<double>(max_display_width_) / camera_view.cols;
+        double sy = static_cast<double>(max_display_height_) / camera_view.rows;
+        display_scale = std::min(sx, sy);
+    }
+    if (display_scale < 1.0) {
+        cv::Mat tmp;
+        cv::resize(camera_view, tmp, cv::Size(), display_scale, display_scale, cv::INTER_AREA);
+        camera_view = tmp;
+    }
     
     // 如果启用了网格线，添加到摄像头视图
     if (show_grid) {
@@ -98,11 +111,25 @@ void UserInterface::displayResults(const cv::Mat& camera_frame, const cv::Mat& d
         
         // 如果启用了网格线，添加到结果视图
         if (show_grid) {
+            // 在缩放后的图像上绘制网格线（GridDrawer 使用图像尺寸绘制）
             GridDrawer::drawGridLines(result_display);
         }
         
-        // 显示结果视图
-        cv::imshow(RESULT_WINDOW, result_display);
+        // 如果结果视图过大，也按相同缩放处理显示
+        if (result_display.cols > max_display_width_ || result_display.rows > max_display_height_) {
+            double sx = static_cast<double>(max_display_width_) / result_display.cols;
+            double sy = static_cast<double>(max_display_height_) / result_display.rows;
+            double rscale = std::min(sx, sy);
+            if (rscale < 1.0) {
+                cv::Mat tmpres;
+                cv::resize(result_display, tmpres, cv::Size(), rscale, rscale, cv::INTER_AREA);
+                cv::imshow(RESULT_WINDOW, tmpres);
+            } else {
+                cv::imshow(RESULT_WINDOW, result_display);
+            }
+        } else {
+            cv::imshow(RESULT_WINDOW, result_display);
+        }
     }
 }
 

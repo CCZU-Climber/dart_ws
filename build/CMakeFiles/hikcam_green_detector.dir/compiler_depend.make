@@ -1083,7 +1083,8 @@ CMakeFiles/hikcam_green_detector.dir/HikCam.cpp.o: ../HikCam.cpp \
   ../Includes/CameraParams.h \
   ../Includes/PixelType.h \
   ../Includes/MvObsoleteInterfaces.h \
-  ../Includes/ObsoleteCamParams.h
+  ../Includes/ObsoleteCamParams.h \
+  /usr/local/include/opencv4/opencv2/imgcodecs.hpp
 
 CMakeFiles/hikcam_green_detector.dir/MotorController.cpp.o: ../MotorController.cpp \
   /usr/include/stdc-predef.h \

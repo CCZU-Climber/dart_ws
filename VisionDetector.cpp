@@ -1,3 +1,4 @@
+//视觉检测模块
 #include "VisionDetector.h"
 #include <iostream>
 #include <algorithm>
@@ -47,8 +48,26 @@ void VisionDetector::setDebugInfo(bool show) {
 
 cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv::Point2f>& detected_circles) {
     detected_circles.clear();
+    // 保存原始帧
     frame.copyTo(current_frame_);
-    cv::Mat processed = preprocessFrame(frame);
+
+    // 对 2448x2048 等高分辨率摄像头进行缩放处理以提高性能
+    float scale = 1.0f;
+    const int max_dim = 1024; // 将较长边缩放到不超过此值
+    int max_side = std::max(frame.cols, frame.rows);
+    if (max_side > max_dim) {
+        scale = static_cast<float>(max_dim) / static_cast<float>(max_side);
+    }
+    detection_scale_ = scale;
+
+    cv::Mat scaled_frame;
+    if (scale < 1.0f) {
+        cv::resize(frame, scaled_frame, cv::Size(), scale, scale, cv::INTER_AREA);
+    } else {
+        scaled_frame = frame;
+    }
+
+    cv::Mat processed = preprocessFrame(scaled_frame);
     cv::Mat color_mask = detectGreenColor(processed);
     color_mask.copyTo(green_mask_);
     
@@ -93,9 +112,9 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
         double area = cv::contourArea(contour);
         if (area < min_area_ || area > max_area_) continue;
         
-        cv::Point2f center;
-        float radius;
-        cv::minEnclosingCircle(contour, center, radius);
+    cv::Point2f center;
+    float radius;
+    cv::minEnclosingCircle(contour, center, radius);
         
         if (radius < min_radius_ || radius > max_radius_) continue;
         
@@ -106,7 +125,7 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
         double aspect_ratio = static_cast<double>(rect.width) / rect.height;
         if (aspect_ratio < 0.6 || aspect_ratio > 1.4) continue;
         
-        cv::Moments M = cv::moments(contour);
+    cv::Moments M = cv::moments(contour);
         if (M.m00 == 0) continue;
         
         cv::Point centroid(
@@ -114,11 +133,16 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
             static_cast<int>(M.m01 / M.m00)
         );
         
-        drawDetectionResult(result, contour, center, radius, circularity, area, centroid);
+    // center/radius are in scaled_frame coordinates; 将它们映射回原始帧坐标
+    cv::Point2f center_orig = cv::Point2f(center.x / detection_scale_, center.y / detection_scale_);
+    float radius_orig = radius / detection_scale_;
+
+    drawDetectionResult(result, contour, center_orig, radius_orig, circularity, area, centroid);
         
         if (detected_circles.empty() || circularity > best_circularity) {
-            best_circle_center = center;
-            best_circle_radius = radius;
+            // 记录原始坐标系的中心点
+            best_circle_center = cv::Point2f(center.x / detection_scale_, center.y / detection_scale_);
+            best_circle_radius = radius / detection_scale_;
             best_circularity = circularity;
         }
         
@@ -140,7 +164,7 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
     std::string stats = "检测到 " + std::to_string(detected_count) + " 个绿色圆形灯";
     cv::putText(result, stats, 
                cv::Point(10, result.rows - 50), 
-               cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 255, 0), 2);
+               cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
     
     return result;
 }

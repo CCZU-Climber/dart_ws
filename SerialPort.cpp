@@ -1,3 +1,4 @@
+//串口通信模块
 #include "SerialPort.h"
 #include <fcntl.h>
 #include <termios.h>

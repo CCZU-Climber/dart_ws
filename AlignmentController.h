@@ -15,6 +15,8 @@ private:
     bool is_aligned_;
     int alignment_frame_count_;
     int8_t last_motor_data_;
+    // 摄像头相对于飞镖架中轴线的水平偏移（像素）。正值表示期望中心点向右偏移。
+    float camera_offset_pixels_;
     
 public:
     AlignmentController();
@@ -53,6 +55,10 @@ public:
     
     // 连接电机控制器
     bool connectMotorController();
+    // 设置摄像头相对于发射架中轴线的水平偏移（像素或通过 mm+scale 转换）
+    void setCameraOffsetPixels(float px);
+    void setCameraOffsetMM(float mm, float mm_per_pixel);
+    float getCameraOffsetPixels() const;
 };
 
 #endif // ALIGNMENTCONTROLLER_H

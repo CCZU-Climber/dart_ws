@@ -1,3 +1,4 @@
+//电机控制器实现文件
 #include "MotorController.h"
 #include <iostream>
 #include <cmath>

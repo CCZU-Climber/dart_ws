@@ -19,6 +19,7 @@
  *                  TODO：加入垂直翻转，水平翻转，相机参数输出，简化设置相机参数流程
 *************************************************************************/
 #include "HikCam.h"
+#include <opencv2/imgcodecs.hpp>
 
 namespace sensor::camera{
         
@@ -175,19 +176,69 @@ namespace sensor::camera{
             {
                 unsigned char *_pDstData = (unsigned char *)stImageInfo.pBufAddr; // 直接使用提供的缓冲区
 
-                if (PixelType_Gvsp_Mono8 == stImageInfo.stFrameInfo.enPixelType)
-                { // Mono8类型
-                    srcImage = cv::Mat(stImageInfo.stFrameInfo.nHeight, stImageInfo.stFrameInfo.nWidth, CV_8UC1, _pDstData);
+                // 处理常见的像素格式
+                unsigned int pixelType = stImageInfo.stFrameInfo.enPixelType;
+                // 仅在第一次获取到像素格式时打印一次，避免每帧都输出
+                if (_lastPixelType == -1) {
+                    printf("[Debug] PixelType: 0x%x\n", pixelType);
+                    _lastPixelType = (int)pixelType;
                 }
-                else if (PixelType_Gvsp_BayerRG8 == stImageInfo.stFrameInfo.enPixelType)
-                { // bayerRG8类型
-                    srcImage = cv::Mat(stImageInfo.stFrameInfo.nHeight, stImageInfo.stFrameInfo.nWidth, CV_8UC1, _pDstData);
-                    cv::cvtColor(srcImage, srcImage, cv::COLOR_BayerRG2RGB);
+                int width = stImageInfo.stFrameInfo.nWidth;
+                int height = stImageInfo.stFrameInfo.nHeight;
+                unsigned int frameLen = stImageInfo.stFrameInfo.nFrameLen;
+
+                if (PixelType_Gvsp_Mono8 == pixelType)
+                { // Mono8类型
+                    srcImage = cv::Mat(height, width, CV_8UC1, _pDstData).clone();
+                }
+                else if (PixelType_Gvsp_BayerRG8 == pixelType || PixelType_Gvsp_BayerGR8 == pixelType
+                      || PixelType_Gvsp_BayerGB8 == pixelType || PixelType_Gvsp_BayerBG8 == pixelType)
+                { // Bayer系列
+                    srcImage = cv::Mat(height, width, CV_8UC1, _pDstData).clone();
+                    if (PixelType_Gvsp_BayerRG8 == pixelType) cv::cvtColor(srcImage, srcImage, cv::COLOR_BayerRG2BGR);
+                    else if (PixelType_Gvsp_BayerGR8 == pixelType) cv::cvtColor(srcImage, srcImage, cv::COLOR_BayerGR2BGR);
+                    else if (PixelType_Gvsp_BayerGB8 == pixelType) cv::cvtColor(srcImage, srcImage, cv::COLOR_BayerGB2BGR);
+                    else if (PixelType_Gvsp_BayerBG8 == pixelType) cv::cvtColor(srcImage, srcImage, cv::COLOR_BayerBG2BGR);
+                }
+                else if (PixelType_Gvsp_RGB8_Packed == pixelType || PixelType_Gvsp_BGR8_Packed == pixelType
+                      || PixelType_Gvsp_HB_RGB8_Packed == pixelType || PixelType_Gvsp_HB_BGR8_Packed == pixelType)
+                { // RGB/BGR packed
+                    srcImage = cv::Mat(height, width, CV_8UC3, _pDstData).clone();
+                    if (PixelType_Gvsp_RGB8_Packed == pixelType || PixelType_Gvsp_HB_RGB8_Packed == pixelType)
+                    {
+                        // 转为OpenCV默认的BGR排列
+                        cv::cvtColor(srcImage, srcImage, cv::COLOR_RGB2BGR);
+                    }
+                }
+                else if (PixelType_Gvsp_YUV420SP_NV12 == pixelType)
+                {
+                    // NV12: height * 3/2 rows, single channel
+                    cv::Mat yuv(height * 3 / 2, width, CV_8UC1, _pDstData);
+                    cv::cvtColor(yuv, srcImage, cv::COLOR_YUV2BGR_NV12);
+                }
+                else if (PixelType_Gvsp_YUV420SP_NV21 == pixelType)
+                {
+                    cv::Mat yuv(height * 3 / 2, width, CV_8UC1, _pDstData);
+                    cv::cvtColor(yuv, srcImage, cv::COLOR_YUV2BGR_NV21);
+                }
+                else if (PixelType_Gvsp_YUV422_Packed == pixelType || PixelType_Gvsp_YUV422_YUYV_Packed == pixelType
+                         || PixelType_Gvsp_HB_YUV422_Packed == pixelType || PixelType_Gvsp_HB_YUV422_YUYV_Packed == pixelType)
+                {
+                    cv::Mat yuv(height, width, CV_8UC2, _pDstData);
+                    // 假设为YUYV打包格式（YUY2）
+                    cv::cvtColor(yuv, srcImage, cv::COLOR_YUV2BGR_YUY2);
+                }
+                else if (PixelType_Gvsp_Jpeg == pixelType)
+                {
+                    // 压缩的JPEG数据，使用imdecode解码
+                    std::vector<uchar> buf(_pDstData, _pDstData + frameLen);
+                    srcImage = cv::imdecode(buf, cv::IMREAD_COLOR);
                 }
                 else
                 {
-                    printf("%s[ERROR]: Unsupported pixel format%s\n", RED_START, COLOR_END);
-                    exit(0);
+                    // 未知/不支持的像素格式，打印信息但不立即exit，以便调试
+                    printf("%s[ERROR]: Unsupported pixel format 0x%x%s\n", RED_START, pixelType, COLOR_END);
+                    // 你可以在此处添加更多格式的处理，或者将此像素格式映射到合适的OpenCV转换
                 }
                 _nRet = MV_CC_FreeImageBuffer(_handle, &stImageInfo);
                 if (_nRet != MV_OK)
@@ -247,6 +298,30 @@ namespace sensor::camera{
             printf("%s[WARNING]: Set ExposureTime fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
             //printf("Set ExposureTime fail! nRet [0x%x]\n", _nRet);
             //break;
+        }
+
+        // 针对 50Hz 工频环境的默认防闪烁设置：关闭自动曝光并固定曝光为 20ms（20000 us），同时启用固定帧率 25 fps
+        // 这些设置会覆盖 Info 中的曝光值，便于减少由环境光源导致的闪烁
+        _nRet = MV_CC_SetEnumValueByString(_handle, "ExposureAuto", "Off");
+        if (MV_OK != _nRet)
+        {
+            printf("%s[WARNING]: Disable Auto Exposure fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
+        }
+        // 强制曝光 20ms（20000 微秒）
+        _nRet = MV_CC_SetFloatValue(_handle, "ExposureTime", 20000.0f);
+        if (MV_OK != _nRet)
+        {
+            printf("%s[WARNING]: Set ExposureTime(20ms) fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
+        }
+        // 启用并设置固定采集帧率为 25 fps（适配 50Hz 照明）
+        _nRet = MV_CC_SetBoolValue(_handle, "AcquisitionFrameRateEnable", true);
+        if (MV_OK == _nRet)
+        {
+            _nRet = MV_CC_SetFloatValue(_handle, "AcquisitionFrameRate", 25.0f);
+            if (MV_OK != _nRet)
+            {
+                printf("%s[WARNING]: Set AcquisitionFrameRate fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
+            }
         }
         // 设置增益
         _nRet = MV_CC_SetFloatValue(_handle, "Gain", Info._nGain);

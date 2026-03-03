@@ -12,6 +12,9 @@ private:
     bool show_grid_;
     bool show_debug_info_;
     int frame_counter_;
+    // 最大显示窗口尺寸（用于控制高分辨率摄像头的显示大小）
+    int max_display_width_ = 1280;
+    int max_display_height_ = 720;
     
     // 窗口名称
     static const std::string CAMERA_WINDOW;

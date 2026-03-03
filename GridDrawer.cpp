@@ -70,3 +70,4 @@ void GridDrawer::drawGridLines(cv::Mat& image) {
     cv::putText(image, "↓ Y", cv::Point(center_x + 10, 20), 
                 cv::FONT_HERSHEY_SIMPLEX, 0.5, grid_color, 1);
 }
+  

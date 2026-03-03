@@ -43,6 +43,8 @@ private:
     
     // 调试信息
     bool show_debug_info_;
+    // 缩放因子（用于在高分辨率下缩小输入以加速检测）
+    float detection_scale_ = 1.0f;
     
 public:
     VisionDetector();
