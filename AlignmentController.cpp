@@ -1,5 +1,6 @@
 //自动对准控制器实现文件
 #include "AlignmentController.h"
+#include "UserInterface.h"
 #include <iostream>
 #include <cmath>
 #include <unistd.h> // for usleep
@@ -25,7 +26,7 @@ void AlignmentController::performAlignment(const cv::Point2f& circle_center, int
     
     // 计算像素误差并应用摄像头相对于发射架中轴线的水平偏移补偿
     // 有效误差 = (检测中心 - 图像中心) - camera_offset_pixels_
-    current_pixel_error_ = (circle_center.x - image_center_x) - camera_offset_pixels_;
+    current_pixel_error_ = (circle_center.x - image_center_x);
     
     // 判断是否已经对准（考虑死区）
     if (fabs(current_pixel_error_) <= alignment_threshold_) {

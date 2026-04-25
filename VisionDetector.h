@@ -4,6 +4,7 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <string>
+#include "DetectionResult.h"  // 添加头文件
 
 class VisionDetector {
 private:
@@ -61,6 +62,9 @@ public:
     // 检测绿色圆形并返回检测到的圆形中心
     cv::Mat detectGreenCircles(const cv::Mat& frame, std::vector<cv::Point2f>& detected_circles);
     
+    // 新增：检测绿色圆形并返回完整检测结果
+    cv::Mat detectGreenCirclesWithResults(const cv::Mat& frame, std::vector<DetectionResult>& results);
+    
     // 获取当前帧
     cv::Mat getCurrentFrame() const;
     
@@ -74,9 +78,12 @@ public:
     cv::Mat getGradientMask() const;
     cv::Mat getCombinedMask() const;
     
+    // 获取缩放因子（用于距离估算）
+    float getDetectionScale() const { return detection_scale_; }
+    
     // 保存当前帧
     void saveCurrentFrame(int& frame_counter);
-    
+
 private:
     // 初始化参数
     void init_parameters();
@@ -100,6 +107,9 @@ private:
     void drawDetectionResult(cv::Mat& result, const std::vector<cv::Point>& contour,
                             const cv::Point2f& center, float radius, 
                             double circularity, double area, const cv::Point& centroid);
+    
+    // 辅助函数：计算像素直径
+    float calculatePixelDiameter(const std::vector<cv::Point>& contour);
 };
 
 #endif // VISIONDETECTOR_H

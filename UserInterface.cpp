@@ -9,7 +9,9 @@ const std::string UserInterface::RESULT_WINDOW = "Detection Result";
 UserInterface::UserInterface() 
     : show_grid_(true),
       show_debug_info_(false),
-      frame_counter_(0) {
+      frame_counter_(0),
+      max_display_width_(1280),
+      max_display_height_(720) {
 }
 
 void UserInterface::initWindows() {
@@ -109,6 +111,160 @@ void UserInterface::displayResults(const cv::Mat& camera_frame, const cv::Mat& d
                    cv::Point(10, 150), 
                    cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(200, 100, 255), 1);
         
+        // 如果启用了网格线，添加到结果视图
+        if (show_grid) {
+            // 在缩放后的图像上绘制网格线（GridDrawer 使用图像尺寸绘制）
+            GridDrawer::drawGridLines(result_display);
+        }
+        
+        // 如果结果视图过大，也按相同缩放处理显示
+        if (result_display.cols > max_display_width_ || result_display.rows > max_display_height_) {
+            double sx = static_cast<double>(max_display_width_) / result_display.cols;
+            double sy = static_cast<double>(max_display_height_) / result_display.rows;
+            double rscale = std::min(sx, sy);
+            if (rscale < 1.0) {
+                cv::Mat tmpres;
+                cv::resize(result_display, tmpres, cv::Size(), rscale, rscale, cv::INTER_AREA);
+                cv::imshow(RESULT_WINDOW, tmpres);
+            } else {
+                cv::imshow(RESULT_WINDOW, result_display);
+            }
+        } else {
+            cv::imshow(RESULT_WINDOW, result_display);
+        }
+    }
+}
+
+// 修改函数签名以区分重载函数 - 将show_grid参数移到最后
+void UserInterface::displayResults(const cv::Mat& camera_frame, const cv::Mat& detection_result,
+                                 const AlignmentController& align_controller,
+                                 double processing_time_ms, 
+                                 const std::vector<DetectionResult>* detection_results,
+                                 bool show_grid) {
+    // 创建摄像头视图的副本用于显示
+    cv::Mat camera_view = camera_frame.clone();
+    // 计算显示缩放因子以限制窗口大小
+    double display_scale = 1.0;
+    if (camera_view.cols > max_display_width_ || camera_view.rows > max_display_height_) {
+        double sx = static_cast<double>(max_display_width_) / camera_view.cols;
+        double sy = static_cast<double>(max_display_height_) / camera_view.rows;
+        display_scale = std::min(sx, sy);
+    }
+    if (display_scale < 1.0) {
+        cv::Mat tmp;
+        cv::resize(camera_view, tmp, cv::Size(), display_scale, display_scale, cv::INTER_AREA);
+        camera_view = tmp;
+    }
+    
+    // 如果启用了网格线，添加到摄像头视图
+    if (show_grid) {
+        GridDrawer::drawGridLines(camera_view);
+    }
+    
+    // 显示摄像头视图
+    cv::imshow(CAMERA_WINDOW, camera_view);
+
+    // 显示检测结果
+    if (!detection_result.empty()) {
+        cv::Mat result_display = detection_result.clone();
+        
+        // 计算并显示处理时间
+        double fps = (processing_time_ms > 0) ? 1000.0 / processing_time_ms : 0;
+        std::string fps_text = "FPS: " + std::to_string(static_cast<int>(fps));
+        cv::putText(result_display, 
+                   fps_text,
+                   cv::Point(10, 30), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 255, 0), 2);
+        
+        std::string time_text = "Time: " + std::to_string(processing_time_ms) + "ms";
+        cv::putText(result_display, 
+                   time_text,
+                   cv::Point(10, 60), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(255, 255, 0), 1);
+        
+        // 显示对准状态
+        std::string align_status = align_controller.isAutoAlignEnabled() ? 
+                                   "AUTO-ALIGN: ON" : "AUTO-ALIGN: OFF";
+        cv::Scalar align_color = align_controller.isAutoAlignEnabled() ? 
+                                 cv::Scalar(0, 255, 0) : cv::Scalar(0, 0, 255);
+        cv::putText(result_display, 
+                   align_status,
+                   cv::Point(10, 90), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, align_color, 1);
+        
+        if (align_controller.isAligned()) {
+            cv::putText(result_display, 
+                       "ALIGNED!",
+                       cv::Point(result_display.cols - 100, 30), 
+                       cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 255, 0), 2);
+        }
+        
+        // 显示像素误差
+        std::string error_text = "Error: " + std::to_string(static_cast<int>(align_controller.getPixelError())) + "px";
+        cv::putText(result_display, 
+                   error_text,
+                   cv::Point(10, 120), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(255, 255, 0), 1);
+        
+        // 显示电机状态
+        std::string motor_state = "Motor: " + align_controller.getMotorStateString();
+        cv::putText(result_display, 
+                   motor_state,
+                   cv::Point(result_display.cols - 150, 60), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(200, 200, 100), 1);
+        
+        // 显示串口连接状态
+        std::string serial_status = align_controller.isMotorConnected() ? 
+                                   "Serial: Connected" : "Serial: Disconnected";
+        cv::Scalar serial_color = align_controller.isMotorConnected() ? 
+                                 cv::Scalar(0, 255, 0) : cv::Scalar(0, 0, 255);
+        cv::putText(result_display, 
+                   serial_status,
+                   cv::Point(result_display.cols - 200, 90), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, serial_color, 1);
+        
+        // 显示当前电机控制数据
+        std::string motor_data = "Motor Data: " + std::to_string(static_cast<int>(align_controller.getLastMotorData()));
+        cv::putText(result_display, 
+                   motor_data,
+                   cv::Point(10, 150), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(200, 100, 255), 1);
+        
+        // 如果提供了检测结果，绘制距离信息
+        if (detection_results != nullptr) {
+            for (const auto& result : *detection_results) {
+                cv::Point2f center(result.circle[0], result.circle[1]);
+                
+                // 将坐标按比例缩放以适应显示窗口
+                if (detection_result.cols > max_display_width_ || detection_result.rows > max_display_height_) {
+                    double scale_x = static_cast<double>(max_display_width_) / detection_result.cols;
+                    double scale_y = static_cast<double>(max_display_height_) / detection_result.rows;
+                    double scale = std::min(scale_x, scale_y);
+                    center.x *= scale;
+                    center.y *= scale;
+                }
+                
+                // 绘制距离信息
+                std::string distance_text;
+                if (result.has_distance) {
+                    distance_text = std::to_string(static_cast<int>(result.distance * 100)) + "cm"; // 转换为厘米
+                } else {
+                    distance_text = "N/A";
+                }
+                
+                cv::putText(result_display, distance_text, 
+                           cv::Point(center.x + 10, center.y - 10),
+                           cv::FONT_HERSHEY_SIMPLEX, 0.7, cv::Scalar(0, 255, 255), 2);
+            }
+        }
+
+        // 显示检测到的目标数量
+        std::string target_count = "Targets: " + std::to_string(detection_results ? detection_results->size() : 0);
+        cv::putText(result_display, 
+                   target_count,
+                   cv::Point(10, 180), 
+                   cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(0, 255, 255), 1);
+
         // 如果启用了网格线，添加到结果视图
         if (show_grid) {
             // 在缩放后的图像上绘制网格线（GridDrawer 使用图像尺寸绘制）

@@ -4,7 +4,9 @@
 #include "VisionDetector.h"
 #include "AlignmentController.h"
 #include "GridDrawer.h"
+#include "DetectionResult.h"  // 添加DetectionResult头文件
 #include <string>
+#include <vector>
 
 class UserInterface {
 private:
@@ -26,10 +28,17 @@ public:
     // 初始化窗口
     void initWindows();
     
-    // 显示处理结果
+    // 显示处理结果 - 原始版本
     void displayResults(const cv::Mat& camera_frame, const cv::Mat& detection_result,
                        bool show_grid, const AlignmentController& align_controller,
                        double processing_time_ms);
+    
+    // 显示处理结果 - 包含距离信息的版本
+    void displayResults(const cv::Mat& camera_frame, const cv::Mat& detection_result,
+                       const AlignmentController& align_controller,
+                       double processing_time_ms, 
+                       const std::vector<DetectionResult>* detection_results,
+                       bool show_grid);
     
     // 处理按键事件
     void handleKeyPress(int key, VisionDetector& vision_detector, AlignmentController& align_controller);
@@ -61,5 +70,4 @@ private:
     void handleSerialPort(int key, AlignmentController& align_controller);
     void handleResetParameters(int key, VisionDetector& vision_detector, AlignmentController& align_controller);
 };
-
 #endif // USERINTERFACE_H

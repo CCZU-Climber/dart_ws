@@ -1,9 +1,10 @@
-#ifndef MOTORCONTROLLER_H
-#define MOTORCONTROLLER_H
+#ifndef MOTOR_CONTROLLER_H
+#define MOTOR_CONTROLLER_H
 
-#include "SerialPort.h"
 #include <string>
 #include <mutex>
+#include <atomic>
+#include "SerialPort.h"
 
 enum class MotorState {
     IDLE,
@@ -14,28 +15,30 @@ enum class MotorState {
 };
 
 class MotorController {
-private:
-    SerialPort serial_port_;
-    MotorState state_;
-    float current_position_;
-    bool is_connected_;
-    mutable std::mutex mutex_;
-    int8_t last_data_value_;
-    
 public:
     MotorController();
     ~MotorController();
-    
-    bool connect(const std::string& port_name = "/dev/ttyUSB0");
+
+    bool connect(const std::string& port_name);
     void disconnect();
     void sendData(float pixel_error);
-    std::string getStateString() const;
     void stop();
+    
     MotorState getState() const;
+    std::string getStateString() const;
     float getCurrentPosition() const;
     float getCurrentSpeed() const;
     bool isConnected() const;
     std::string getPortName() const;
+
+private:
+    SerialPort serial_port_;
+    mutable std::mutex mutex_;
+    
+    std::atomic<MotorState> state_;
+    float current_position_;
+    std::atomic<bool> is_connected_;
+    int8_t last_data_value_;
 };
 
-#endif
+#endif // MOTOR_CONTROLLER_H

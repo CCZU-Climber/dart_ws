@@ -17,6 +17,7 @@ namespace sensor::camera
 
     enum TRIGGERSOURCE
     {
+        CONTINUOUS,
         SOFTWARE,
         LINE0,
         LINE2,
@@ -92,7 +93,7 @@ namespace sensor::camera
         int _nHeartTimeOut = 1000;
         float _nExpTime = 5000;
         float _nGain = 16;
-        TRIGGERSOURCE _nTrigger = SOFTWARE;
+        TRIGGERSOURCE _nTrigger = CONTINUOUS;  // 默认连续模式
         GAMMAMODE _nGamma = sRGB;
     };
     void __stdcall ImageCallBackEx(unsigned char *pData, MV_FRAME_OUT_INFO_EX *pFrameInfo, void *pUser);
@@ -102,16 +103,17 @@ namespace sensor::camera
         HikCam(CAM_INFO Info);
         ~HikCam();
         auto Grab() -> cv::Mat;
+      
 
     private:
         int _nRet = MV_OK;
         void *_handle = NULL;
         unsigned char *_pDstData = NULL;
-    // 记录上一次打印的像素格式，避免每帧重复打印调试信息
-    int _lastPixelType = -1;
+        int _lastPixelType = -1;
+        CAM_INFO _info;  // 🔧 添加：私有成员存储 CAM_INFO
 
         bool PrintDeviceInfo(MV_CC_DEVICE_INFO *pstMVDevInfo);
-        void SetAttribute(CAM_INFO Info);
+        void SetAttribute();  // 🔧 修改：移除参数，使用 _info
     };
 
 } // namespace sensor

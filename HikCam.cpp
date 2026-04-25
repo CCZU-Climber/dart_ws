@@ -57,7 +57,7 @@ namespace sensor::camera{
 
 
 
-    HikCam::HikCam(CAM_INFO Info) {
+    HikCam::HikCam(CAM_INFO Info) : _info(Info) {  // 🔧 修改：使用初始化列表赋值 _info
 
         // ch:初始化SDK | en:Initialize SDK
         // _nRet = MV_CC_Initialize();
@@ -141,15 +141,15 @@ namespace sensor::camera{
             }
         }
 
-        // ch:设置触发模式为off | eb:Set trigger mode as off
-        _nRet = MV_CC_SetEnumValue(_handle, "TriggerMode", MV_TRIGGER_MODE_OFF);
-        if (MV_OK != _nRet)
-        {
-            printf("%s[ERROR]: Set Trigger Mode fail! nRet [0x%x]%s\n", RED_START, _nRet, COLOR_END);
-            //printf("Set Trigger Mode fail! nRet [0x%x]\n", _nRet);
-            //break;
-        }
-        SetAttribute(Info);
+        // ch:设置触发模式 | en:Set trigger mode (removed here, handled in SetAttribute)
+        // _nRet = MV_CC_SetEnumValue(_handle, "TriggerMode", MV_TRIGGER_MODE_OFF);
+        // if (MV_OK != _nRet)
+        // {
+        //     printf("%s[ERROR]: Set Trigger Mode fail! nRet [0x%x]%s\n", RED_START, _nRet, COLOR_END);
+        //     //printf("Set Trigger Mode fail! nRet [0x%x]\n", _nRet);
+        //     //break;
+        // }
+        SetAttribute();  // 🔧 修改：调用无参数版本
 
         // ch:开始取流 | en:Start grab image
         _nRet = MV_CC_StartGrabbing(_handle);
@@ -168,8 +168,15 @@ namespace sensor::camera{
         const int maxRetries = 5; // 最大重试次数
         int numRetries = 0;
 
-        while (numRetries < maxRetries)
-        {
+        while (numRetries < maxRetries) {
+            if (_info._nTrigger == SOFTWARE) {  // 🔧 修改：使用 _info
+                _nRet = MV_CC_SetCommandValue(_handle, "TriggerSoftware");
+                if (_nRet != MV_OK) {
+                    printf("Trigger Software fail! nRet [0x%x]\n", _nRet);
+                    numRetries++;
+                    continue;
+                }
+            }
             _nRet = MV_CC_GetImageBuffer(_handle, &stImageInfo, 1000);
 
             if (_nRet == MV_OK)
@@ -259,40 +266,43 @@ namespace sensor::camera{
         return srcImage;
     }
 
-    void HikCam::SetAttribute(CAM_INFO Info) {
-    //    // 设置触发模式
-    //    if (Info._nTrigger == SOFTWARE)
-    //    {
-    //        _nRet = MV_CC_SetEnumValueByString(_handle, "TriggerSource", "Software");
-    //        if (MV_OK != _nRet)
-    //        {
-    //            printf("%s[WARNING]: Set Trigger Software fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
-    //			//printf("Set Trigger Software fail! nRet [0x%x]\n", _nRet);
-    //			//break;
-    //		}
-    //	}
-    //	if (Info._nTrigger == LINE0)
-    //	{
-    //		_nRet = MV_CC_SetEnumValueByString(_handle, "TriggerSource", "Line0");
-    //        if (MV_OK != _nRet)
-    //        {
-    //            printf("%s[WARNING]: Set Trigger Line0 fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
-    //			//printf("Set Trigger Line0 fail! nRet [0x%x]\n", _nRet);
-    //			//break;
-    //		}
-    //	}
-    //	if (Info._nTrigger == LINE2)
-    //	{
-    //		_nRet = MV_CC_SetEnumValueByString(_handle, "TriggerSource", "Line2");
-    //        if (MV_OK != _nRet)
-    //        {
-    //            printf("%s[WARNING]: Set Trigger Line2 fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
-    //			//printf("Set Trigger Line2 fail! nRet [0x%x]\n", _nRet);
-    //			//break;
-    //		}
-    //    }
+    void HikCam::SetAttribute() {
+        if (_info._nTrigger == SOFTWARE) {
+            _nRet = MV_CC_SetEnumValue(_handle, "TriggerMode", MV_TRIGGER_MODE_ON);
+            if (MV_OK != _nRet) {
+                printf("%s[ERROR]: Set Trigger Mode ON fail! nRet [0x%x]%s\n", RED_START, _nRet, COLOR_END);
+            }
+            _nRet = MV_CC_SetEnumValueByString(_handle, "TriggerSource", "Software");
+            if (MV_OK != _nRet) {
+                printf("%s[WARNING]: Set Trigger Software fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
+            }
+        } else if (_info._nTrigger == LINE0) {
+            _nRet = MV_CC_SetEnumValue(_handle, "TriggerMode", MV_TRIGGER_MODE_ON);
+            if (MV_OK != _nRet) {
+                printf("%s[ERROR]: Set Trigger Mode ON fail! nRet [0x%x]%s\n", RED_START, _nRet, COLOR_END);
+            }
+            _nRet = MV_CC_SetEnumValueByString(_handle, "TriggerSource", "Line0");
+            if (MV_OK != _nRet) {
+                printf("%s[WARNING]: Set Trigger Line0 fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
+            }
+        } else if (_info._nTrigger == LINE2) {
+            _nRet = MV_CC_SetEnumValue(_handle, "TriggerMode", MV_TRIGGER_MODE_ON);
+            if (MV_OK != _nRet) {
+                printf("%s[ERROR]: Set Trigger Mode ON fail! nRet [0x%x]%s\n", RED_START, _nRet, COLOR_END);
+            }
+            _nRet = MV_CC_SetEnumValueByString(_handle, "TriggerSource", "Line2");
+            if (MV_OK != _nRet) {
+                printf("%s[WARNING]: Set Trigger Line2 fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
+            }
+        } else {
+            _nRet = MV_CC_SetEnumValue(_handle, "TriggerMode", MV_TRIGGER_MODE_OFF);
+            if (MV_OK != _nRet) {
+                printf("%s[ERROR]: Set Trigger Mode OFF fail! nRet [0x%x]%s\n", RED_START, _nRet, COLOR_END);
+            }
+        }
+
         // 设置曝光时间
-        _nRet = MV_CC_SetFloatValue(_handle, "ExposureTime", Info._nExpTime);
+        _nRet = MV_CC_SetFloatValue(_handle, "ExposureTime", _info._nExpTime);  // 🔧 修改：使用 _info
         if (MV_OK != _nRet)
         {
             printf("%s[WARNING]: Set ExposureTime fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -324,7 +334,7 @@ namespace sensor::camera{
             }
         }
         // 设置增益
-        _nRet = MV_CC_SetFloatValue(_handle, "Gain", Info._nGain);
+        _nRet = MV_CC_SetFloatValue(_handle, "Gain", _info._nGain);  // 🔧 修改：使用 _info
         if (MV_OK != _nRet)
         {
             printf("%s[WARNING]: Set Gain fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -332,7 +342,7 @@ namespace sensor::camera{
             //break;
         }
         // 设置宽度
-        _nRet = MV_CC_SetIntValue(_handle, "Width", Info._nWidth);
+        _nRet = MV_CC_SetIntValue(_handle, "Width", _info._nWidth);  // 🔧 修改：使用 _info
         if (MV_OK != _nRet)
         {
             printf("%s[WARNING]: Set Width fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -340,7 +350,7 @@ namespace sensor::camera{
             //break;
         }
         // 设置高度
-        _nRet = MV_CC_SetIntValue(_handle, "Height", Info._nHeight);
+        _nRet = MV_CC_SetIntValue(_handle, "Height", _info._nHeight);  // 🔧 修改：使用 _info
         if (MV_OK != _nRet)
         {
             printf("%s[WARNING]: Set Height fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -348,7 +358,7 @@ namespace sensor::camera{
             //break;
         }
         // 设置偏移X
-        _nRet = MV_CC_SetIntValue(_handle, "OffsetX", Info._nOffsetX);
+        _nRet = MV_CC_SetIntValue(_handle, "OffsetX", _info._nOffsetX);  // 🔧 修改：使用 _info
         if (MV_OK != _nRet)
         {
             printf("%s[WARNING]: Set OffsetX fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -356,7 +366,7 @@ namespace sensor::camera{
             //break;
         }
         // 设置偏移Y
-        _nRet = MV_CC_SetIntValue(_handle, "OffsetY", Info._nOffsetY);
+        _nRet = MV_CC_SetIntValue(_handle, "OffsetY", _info._nOffsetY);  // 🔧 修改：使用 _info
         if (MV_OK != _nRet)
         {
             printf("%s[ERROR]: Set OffsetY fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -372,9 +382,9 @@ namespace sensor::camera{
     //        //break;
     //    }
         //设置Gamma使能
-        _nRet = MV_CC_SetBoolValue(_handle, "GammaEnable", Info._nGamma);
-        if(Info._nGamma)
-            _nRet = MV_CC_SetEnumValue(_handle, "GammaSelector", Info._nGamma);
+        _nRet = MV_CC_SetBoolValue(_handle, "GammaEnable", _info._nGamma);  // 🔧 修改：使用 _info
+        if(_info._nGamma)
+            _nRet = MV_CC_SetEnumValue(_handle, "GammaSelector", _info._nGamma);
         if (MV_OK != _nRet)
         {
             printf("%s[ERROR]: Set GammaMode fail! nRet [0x%x]%s\n", YELLOW_START, _nRet, COLOR_END);
@@ -383,22 +393,23 @@ namespace sensor::camera{
         //输出当前设置
         printf("%s", GREEN_START);
         printf("Current Setting:\n");
-        printf("ExposureTime: %f\n", Info._nExpTime);
-        printf("Gain: %f\n", Info._nGain);
-        printf("Width: %d\n", Info._nWidth);
-        printf("Height: %d\n", Info._nHeight);
-        printf("HeartbeatTimeout: %d\n", Info._nHeartTimeOut);
-        printf("OffsetX: %d\n", Info._nOffsetX);
-        printf("OffsetY: %d\n", Info._nOffsetY);
+        printf("ExposureTime: %f\n", _info._nExpTime);  // 🔧 修改：使用 _info
+        printf("Gain: %f\n", _info._nGain);  // 🔧 修改：使用 _info
+        printf("Width: %d\n", _info._nWidth);  // 🔧 修改：使用 _info
+        printf("Height: %d\n", _info._nHeight);  // 🔧 修改：使用 _info
+        printf("HeartbeatTimeout: %d\n", _info._nHeartTimeOut);  // 🔧 修改：使用 _info
+        printf("OffsetX: %d\n", _info._nOffsetX);  // 🔧 修改：使用 _info
+        printf("OffsetY: %d\n", _info._nOffsetY);  // 🔧 修改：使用 _info
         auto getTriggerSource = [](TRIGGERSOURCE trigger) -> const char* {
             switch (trigger) {
+            case CONTINUOUS: return "CONTINUOUS";
             case SOFTWARE: return "SOFTWARE";
             case LINE0:    return "LINE0";
             case LINE2:    return "LINE2";
-            default:       return"ERROR";
+            default:       return "ERROR";
             }
         };
-        printf("TriggerSource: %s\n", getTriggerSource(Info._nTrigger));
+        printf("TriggerSource: %s\n", getTriggerSource(_info._nTrigger));  // 🔧 修改：使用 _info
         auto getGammaMode = [](GAMMAMODE nGamma) -> const char* {
             switch (nGamma) {
                 case OFF:       return "OFF";
@@ -407,7 +418,7 @@ namespace sensor::camera{
                 default:        return "ERROR";
             }
         };
-        printf("GammaMode: %s\n", getGammaMode(Info._nGamma));
+        printf("GammaMode: %s\n", getGammaMode(_info._nGamma));  // 🔧 修改：使用 _info
         printf("**************************%s", COLOR_END);
     }
     HikCam::~HikCam() {

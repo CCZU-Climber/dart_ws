@@ -1,4 +1,3 @@
-//视觉检测模块
 #include "VisionDetector.h"
 #include <iostream>
 #include <algorithm>
@@ -9,29 +8,29 @@ VisionDetector::VisionDetector() : show_debug_info_(false) {
 
 void VisionDetector::init_parameters() {
     // 初始化绿色范围（针对前哨站灯光） - 扩大范围
-    green_lower_ = cv::Scalar(35, 50, 50);   // H: 35-85, S: 50-255, V: 50-255
+    green_lower_ = cv::Scalar(35, 50,50); // H: 35-85, S: 50-255, V: 50-255
     green_upper_ = cv::Scalar(85, 255, 255);
     
     // 检测参数
-    circularity_threshold_ = 0.5;  // 降低阈值以提高检测率
-    min_area_ = 20.0;  // 降低最小面积
+    circularity_threshold_ = 0.5; // 降低阈值以提高检测率
+    min_area_ = 20.0; // 降低最小面积
     max_area_ = 5000.0;
-    min_radius_ = 3.0;  // 降低最小半径
+    min_radius_ = 3.0; // 降低最小半径
     max_radius_ = 80.0;
     
     // 亮核检测参数
-    brightness_threshold_low_ = 120.0;  // 降低亮度阈值
+    brightness_threshold_low_ = 150.0; // 降低亮度阈值
     brightness_threshold_high_ = 255.0;
     
     // 梯度检测参数
-    gradient_threshold_low_ = 15.0;  // 降低梯度阈值
+    gradient_threshold_low_ = 30.0; // 降低梯度阈值
     gradient_threshold_high_ = 255.0;
     
     // 形态学参数
     morph_kernel_size_ = 3;
     
     // 检测模式
-    detection_mode_ = 2;  // 混合模式
+    detection_mode_ = 2; // 混合模式
 }
 
 void VisionDetector::setDetectionMode(int mode) {
@@ -48,9 +47,10 @@ void VisionDetector::setDebugInfo(bool show) {
 
 cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv::Point2f>& detected_circles) {
     detected_circles.clear();
+    
     // 保存原始帧
     frame.copyTo(current_frame_);
-
+    
     // 对 2448x2048 等高分辨率摄像头进行缩放处理以提高性能
     float scale = 1.0f;
     const int max_dim = 1024; // 将较长边缩放到不超过此值
@@ -59,40 +59,44 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
         scale = static_cast<float>(max_dim) / static_cast<float>(max_side);
     }
     detection_scale_ = scale;
-
+    
     cv::Mat scaled_frame;
     if (scale < 1.0f) {
         cv::resize(frame, scaled_frame, cv::Size(), scale, scale, cv::INTER_AREA);
     } else {
         scaled_frame = frame;
     }
-
+    
     cv::Mat processed = preprocessFrame(scaled_frame);
     cv::Mat color_mask = detectGreenColor(processed);
     color_mask.copyTo(green_mask_);
     
     cv::Mat detection_mask;
+    
+    // 🔧 关键修复：为每个case添加大括号，创建独立作用域
     switch (detection_mode_) {
-        case 0:
-            bright_core_mask_ = detectBrightCore(processed);
-            cv::bitwise_and(color_mask, bright_core_mask_, detection_mask);
+        case 0: {
+            cv::Mat bright_core_mask = detectBrightCore(processed);
+            cv::bitwise_and(color_mask, bright_core_mask, detection_mask);
             break;
-        case 1:
-            gradient_mask_ = detectGradient(processed);
-            cv::bitwise_and(color_mask, gradient_mask_, detection_mask);
+        }
+        case 1: {
+            cv::Mat gradient_mask = detectGradient(processed);
+            cv::bitwise_and(color_mask, gradient_mask, detection_mask);
             break;
+        }
         case 2:
-        default:
-            bright_core_mask_ = detectBrightCore(processed);
-            gradient_mask_ = detectGradient(processed);
+        default: {
+            cv::Mat bright_core_mask = detectBrightCore(processed);
+            cv::Mat gradient_mask = detectGradient(processed);
             cv::Mat temp;
-            cv::bitwise_or(bright_core_mask_, gradient_mask_, temp);
+            cv::bitwise_or(bright_core_mask, gradient_mask, temp);
             cv::bitwise_and(color_mask, temp, detection_mask);
             break;
+        }
     }
     
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, 
-                                              cv::Size(morph_kernel_size_, morph_kernel_size_));
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(morph_kernel_size_, morph_kernel_size_));
     cv::morphologyEx(detection_mask, detection_mask, cv::MORPH_CLOSE, kernel);
     cv::morphologyEx(detection_mask, detection_mask, cv::MORPH_OPEN, kernel);
     detection_mask.copyTo(combined_mask_);
@@ -112,9 +116,9 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
         double area = cv::contourArea(contour);
         if (area < min_area_ || area > max_area_) continue;
         
-    cv::Point2f center;
-    float radius;
-    cv::minEnclosingCircle(contour, center, radius);
+        cv::Point2f center;
+        float radius;
+        cv::minEnclosingCircle(contour, center, radius);
         
         if (radius < min_radius_ || radius > max_radius_) continue;
         
@@ -125,19 +129,16 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
         double aspect_ratio = static_cast<double>(rect.width) / rect.height;
         if (aspect_ratio < 0.6 || aspect_ratio > 1.4) continue;
         
-    cv::Moments M = cv::moments(contour);
+        cv::Moments M = cv::moments(contour);
         if (M.m00 == 0) continue;
         
-        cv::Point centroid(
-            static_cast<int>(M.m10 / M.m00), 
-            static_cast<int>(M.m01 / M.m00)
-        );
+        cv::Point centroid(static_cast<int>(M.m10 / M.m00), static_cast<int>(M.m01 / M.m00));
         
-    // center/radius are in scaled_frame coordinates; 将它们映射回原始帧坐标
-    cv::Point2f center_orig = cv::Point2f(center.x / detection_scale_, center.y / detection_scale_);
-    float radius_orig = radius / detection_scale_;
-
-    drawDetectionResult(result, contour, center_orig, radius_orig, circularity, area, centroid);
+        // center/radius are in scaled_frame coordinates; 将它们映射回原始帧坐标
+        cv::Point2f center_orig = cv::Point2f(center.x / detection_scale_, center.y / detection_scale_);
+        float radius_orig = radius / detection_scale_;
+        
+        drawDetectionResult(result, contour, center_orig, radius_orig, circularity, area, centroid);
         
         if (detected_circles.empty() || circularity > best_circularity) {
             // 记录原始坐标系的中心点
@@ -162,9 +163,142 @@ cv::Mat VisionDetector::detectGreenCircles(const cv::Mat& frame, std::vector<cv:
     }
     
     std::string stats = "检测到 " + std::to_string(detected_count) + " 个绿色圆形灯";
-    cv::putText(result, stats, 
-               cv::Point(10, result.rows - 50), 
-               cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+    cv::putText(result, stats, cv::Point(10, result.rows - 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
+    
+    return result;
+}
+
+cv::Mat VisionDetector::detectGreenCirclesWithResults(const cv::Mat& frame, std::vector<DetectionResult>& results) {
+    results.clear();
+    
+    // 保存原始帧
+    frame.copyTo(current_frame_);
+    
+    // 对 2448x2048 等高分辨率摄像头进行缩放处理以提高性能
+    float scale = 1.0f;
+    const int max_dim = 1024; // 将较长边缩放到不超过此值
+    int max_side = std::max(frame.cols, frame.rows);
+    if (max_side > max_dim) {
+        scale = static_cast<float>(max_dim) / static_cast<float>(max_side);
+    }
+    detection_scale_ = scale;
+    
+    cv::Mat scaled_frame;
+    if (scale < 1.0f) {
+        cv::resize(frame, scaled_frame, cv::Size(), scale, scale, cv::INTER_AREA);
+    } else {
+        scaled_frame = frame;
+    }
+    
+    cv::Mat processed = preprocessFrame(scaled_frame);
+    cv::Mat color_mask = detectGreenColor(processed);
+    color_mask.copyTo(green_mask_);
+    
+    cv::Mat detection_mask;
+    
+    // 🔧 关键修复：为每个case添加大括号，创建独立作用域
+    switch (detection_mode_) {
+        case 0: {
+            cv::Mat bright_core_mask = detectBrightCore(processed);
+            cv::bitwise_and(color_mask, bright_core_mask, detection_mask);
+            break;
+        }
+        case 1: {
+            cv::Mat gradient_mask = detectGradient(processed);
+            cv::bitwise_and(color_mask, gradient_mask, detection_mask);
+            break;
+        }
+        case 2:
+        default: {
+            cv::Mat bright_core_mask = detectBrightCore(processed);
+            cv::Mat gradient_mask = detectGradient(processed);
+            cv::Mat temp;
+            cv::bitwise_or(bright_core_mask, gradient_mask, temp);
+            cv::bitwise_and(color_mask, temp, detection_mask);
+            break;
+        }
+    }
+    
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(morph_kernel_size_, morph_kernel_size_));
+    cv::morphologyEx(detection_mask, detection_mask, cv::MORPH_CLOSE, kernel);
+    cv::morphologyEx(detection_mask, detection_mask, cv::MORPH_OPEN, kernel);
+    detection_mask.copyTo(combined_mask_);
+    
+    cv::Mat result;
+    frame.copyTo(result);
+    
+    std::vector<std::vector<cv::Point>> contours;
+    cv::findContours(detection_mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    
+    int detected_count = 0;
+    cv::Point2f best_circle_center(-1, -1);
+    float best_circle_radius = 0;
+    double best_circularity = 0;
+    
+    for (const auto& contour : contours) {
+        double area = cv::contourArea(contour);
+        if (area < min_area_ || area > max_area_) continue;
+        
+        cv::Point2f center;
+        float radius;
+        cv::minEnclosingCircle(contour, center, radius);
+        
+        if (radius < min_radius_ || radius > max_radius_) continue;
+        
+        double circularity = calculateCircularity(contour);
+        if (circularity < circularity_threshold_) continue;
+        
+        cv::Rect rect = cv::boundingRect(contour);
+        double aspect_ratio = static_cast<double>(rect.width) / rect.height;
+        if (aspect_ratio < 0.6 || aspect_ratio > 1.4) continue;
+        
+        cv::Moments M = cv::moments(contour);
+        if (M.m00 == 0) continue;
+        
+        cv::Point centroid(static_cast<int>(M.m10 / M.m00), static_cast<int>(M.m01 / M.m00));
+        
+        // center/radius are in scaled_frame coordinates; 将它们映射回原始帧坐标
+        cv::Point2f center_orig = cv::Point2f(center.x / detection_scale_, center.y / detection_scale_);
+        float radius_orig = radius / detection_scale_;
+        
+        // 创建检测结果
+        DetectionResult res;
+        res.circle = cv::Vec3f(center_orig.x, center_orig.y, radius_orig);  // x, y, radius
+        res.confidence = circularity;  // 使用圆度作为置信度
+        
+        // 使用面积等效直径，更准确地表示目标大小
+        if (area > 0) {
+            float equivalent_radius = sqrt(area / CV_PI);
+            res.pixel_diameter = 2.0f * equivalent_radius;
+        } else {
+            res.pixel_diameter = 2.0f * radius_orig;  // 备用方法
+        }
+        
+        res.has_distance = false;  // 距离由DistanceEstimator计算
+        
+        results.push_back(res);
+        
+        drawDetectionResult(result, contour, center_orig, radius_orig, circularity, area, centroid);
+        
+        if (results.empty() || circularity > best_circularity) {
+            best_circle_center = center_orig;
+            best_circle_radius = radius_orig;
+            best_circularity = circularity;
+        }
+        
+        detected_count++;
+        
+        if (show_debug_info_) {
+            std::cout << "✓ 检测到绿色圆形灯 #" << detected_count 
+                      << " - 像素直径: " << res.pixel_diameter << "px"
+                      << ", 圆度: " << circularity 
+                      << ", 面积: " << area 
+                      << ", 中心: (" << center_orig.x << ", " << center_orig.y << ")" << std::endl;
+        }
+    }
+    
+    std::string stats = "检测到 " + std::to_string(detected_count) + " 个绿色圆形灯";
+    cv::putText(result, stats, cv::Point(10, result.rows - 50), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(0, 255, 0), 2);
     
     return result;
 }
@@ -219,8 +353,7 @@ cv::Mat VisionDetector::detectBrightCore(const cv::Mat& frame) {
     cv::GaussianBlur(gray, gray, cv::Size(3, 3), 0.5);
     cv::inRange(gray, brightness_threshold_low_, brightness_threshold_high_, bright_core);
     
-    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, 
-                                              cv::Size(morph_kernel_size_, morph_kernel_size_));
+    cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(morph_kernel_size_, morph_kernel_size_));
     cv::morphologyEx(bright_core, bright_core, cv::MORPH_CLOSE, kernel);
     return bright_core;
 }
@@ -264,18 +397,15 @@ void VisionDetector::drawDetectionResult(cv::Mat& result, const std::vector<cv::
     (void)centroid;
     
     int rect_size = static_cast<int>(radius * 1.5);
-    cv::Point rect_top_left(static_cast<int>(center.x - rect_size), 
-                           static_cast<int>(center.y - rect_size));
-    cv::Point rect_bottom_right(static_cast<int>(center.x + rect_size), 
-                               static_cast<int>(center.y + rect_size));
+    cv::Point rect_top_left(static_cast<int>(center.x - rect_size), static_cast<int>(center.y - rect_size));
+    cv::Point rect_bottom_right(static_cast<int>(center.x + rect_size), static_cast<int>(center.y + rect_size));
     
     rect_top_left.x = std::max(0, rect_top_left.x);
     rect_top_left.y = std::max(0, rect_top_left.y);
     rect_bottom_right.x = std::min(result.cols - 1, rect_bottom_right.x);
     rect_bottom_right.y = std::min(result.rows - 1, rect_bottom_right.y);
     
-    cv::rectangle(result, rect_top_left, rect_bottom_right, 
-                 cv::Scalar(255, 0, 0), 2);
+    cv::rectangle(result, rect_top_left, rect_bottom_right, cv::Scalar(255, 0, 0), 2);
     
     cv::line(result, center, cv::Point(rect_top_left.x, rect_top_left.y), cv::Scalar(0, 100, 255), 1);
     cv::line(result, center, cv::Point(rect_bottom_right.x, rect_top_left.y), cv::Scalar(0, 100, 255), 1);
@@ -284,17 +414,11 @@ void VisionDetector::drawDetectionResult(cv::Mat& result, const std::vector<cv::
     
     cv::circle(result, center, 3, cv::Scalar(0, 0, 255), -1);
     
-    std::string info = "R:" + std::to_string(static_cast<int>(radius)) + 
-                      " C:" + std::to_string(static_cast<int>(circularity * 100)) + "%";
+    std::string info = "R:" + std::to_string(static_cast<int>(radius)) + " C:" + std::to_string(static_cast<int>(circularity * 100)) + "%";
     
-    cv::Point text_pos(
-        std::max(0, rect_top_left.x), 
-        std::max(0, rect_top_left.y - 10)
-    );
+    cv::Point text_pos(std::max(0, rect_top_left.x), std::max(0, rect_top_left.y - 10));
     
-    cv::putText(result, info, 
-               text_pos,
-               cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);
+    cv::putText(result, info, text_pos, cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 255, 255), 1);
     
     cv::circle(result, center, 1, cv::Scalar(0, 255, 255), -1);
 }
